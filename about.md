@@ -1,18 +1,18 @@
 ---
-layout: page
+layout: post
 title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+Done is better than perfect.
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
-
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
+완수하는 것이 완벽한 것보다 낫다.
 
 
-[jekyll-organization]: https://github.com/jekyll
+Email:
+[yongjin5184@gmail.com][email]
+
+GitHub:
+[https://github.com/yongjin5184/](https://github.com/yongjin5184)
+
+[email]: mailto:yongjin5184@gmail.com
