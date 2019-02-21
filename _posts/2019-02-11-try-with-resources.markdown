@@ -12,8 +12,7 @@ categories: java
   * 이는 빌링 관리자의 상품 수정 페이지에서 이루어지는 작업으로 아래와 같은 코드를 작성하면 됩니다.
 
 
-{% highlight ruby linenos %}
-
+```java
 Boolean isPermissionedUser = false;
 BufferedReader bufferedReader = null;
 FileInputStream fileInputStream = null;
@@ -40,8 +39,7 @@ try{
         e.printStackTrace();
     }
 }
-
-{% endhighlight %}
+```
 
 해당 코드는 예외가 발생할 수 있는 IO 관련 클래스에 try catch 블록을 문제없이 사용하였고, finally 블록에 자원을 회수하는 close 메소드까지 문제없이 호출하였습니다.
 
@@ -64,8 +62,7 @@ try{
 
 간결한 코드가 에러를 줄이는 건 만고불변의 진리. 아래는 try-finally 구문을 try-with-resources로 바꾼 코드입니다.
 
-{% highlight ruby linenos %}
-
+```java
 Boolean isPermissionedUser = false;
 try( BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath))) ){
     String[] userIdArr = br.readLine().replaceAll("\\s", "").trim().split(",");
@@ -78,8 +75,7 @@ try( BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputS
 }catch(IOException e){
     e.printStackTrace();
 }
-
-{% endhighlight %}
+```
 
 
 ### 둘째,
