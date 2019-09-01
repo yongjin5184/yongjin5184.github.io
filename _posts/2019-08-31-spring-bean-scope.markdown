@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Spring bean scope"
+title:  "Spring Bean scope"
 date:   2019-08-31 13:48:13 +0900
 categories: java
 ---
