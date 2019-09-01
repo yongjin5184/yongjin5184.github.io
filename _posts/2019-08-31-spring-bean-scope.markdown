@@ -31,8 +31,97 @@ categories: java
     
     4) 사용자의 요청별로 독립적인 정보나 작업 상태를 저장해둘 오브젝트를 만들 필요시.
     
-    **토비의 스프링 Vol.2** >> 1.3 프로토 타입과 스코프에 자세히 나와 있음.
+    여기서 드는 의문점이 하나 있습니다. 
+    
+    > 대부분의 스프링 빈은 싱글톤으로 만들어지는데, 그렇다면 언제 프로토타입 빈을 사용하는 걸까?
+    
+    의문을 해소하기 위해, **토비의 스프링** >> [1.3 프로토 타입과 스코프] 에 있는 내용을 공부해 보았습니다. <br>(자세한 내용은 꼭 책을 참고하세요!)
+    
+    콜센터에서 고객의 A/S 신청을 받아서 접수하는 기능을 만든다고 생각해봅시다.
+    
+    폼 정보를 담는 오브젝트 > 서비스 계층으로 전달 > A/S신청 접수 > Email 발송의 순서로 로직이 작성될 것입니다.
+    
+    ```java
+    public class ServiceRequest {
+        String customerNo;
+        String productNo;      
+        String description;
+    }
+
+    public void serviceRequestFormSubmit(HttpServletRequest request) {
+        ServiceRequest serviceRequest = new ServiceRequest();
+        serviceRequest.setCustomerNo(request.getParameter("custno"));
+        ...
+        this.serviceRequestService.addNewServiceRequest(serviceRequest);
+        ...
+    }
+    
+    public void addNewServiceRequest(ServiceRequest serviceRequest) {
+        Customer customer = this.customerDao.findCustomerByNo(serviceReqeust.getCustomerNo());
+        this.serviceRequestDao.add(serviceRequest, customer);
+    
+        this.emailService.sendEmail(customer.getEmail(), "정상적으로 처리되었습니다.");
+    }
+    ```
+    이렇게 작성된 코드를 토비의 스프링에선 아래와 같이 이야기 하고 있습니다.
+    
+    > 전형적인 데이터 중심의 아키텍처가 만들어내는 구조다. 즉, 도메인 모델을 반영하고 있다고 보기 힘들다.
+    모델 관점으로 보자면 서비스 요청 클래스인 ServiceRequest는 Customer라는 고객 클래스와 연결되어 있어야지, 
+    폼에서 어떻게 입력받는지에 따라 달라지는 customerNo나 customerId 같은 값에 의존하고 있으면 안된다.  
+    
+    이에 따라 **도메인 모델**을 반영해서 수정해 봅시다.
+    
+    ```java
+    public class ServiceRequest {
+        Customer customer;
+        String productNo;      
+        String description;
+    }
+        
+    public void addNewServiceRequest(ServiceRequest serviceRequest) {
+        this.serviceRequestDao.add(serviceRequest);
+        this.emailService.sendEmail(serviceRequest.getCustomer().getEmail(), "정상적으로 처리되었습니다.");
+    }
+    ```
+    
+    여기서, ServiceRequest 자신이 CustomerDao를 사용해 Customer를 찾도록 하는 것이 핵심입니다.
+    <br>
+    <br>
+    **프로토타입**의 등장! 
+    ```java
+    @Scope("prototype")
+    public class ServiceRequest {
+        
+        Customer customer;
+    
+        @Autowired
+        CustomerDao customerDao;
+        
+        public void setCustomerByCustomerNo(String customerNo){
+            this.customer = customerDao.findCustomerByNo(customerNo);
+        }
+    }
+    ```
+    > DI를 적용하려면 결국 컨테이너에 오브젝트 생성을 맡겨야 한다. 또한 컨테이너가 만드는 빈이지만 매번 같은 오브젝트를 돌려주는 것이 아니라 
+    new로 생성하듯이 새로운 오브젝트가 만들어지게 해야한다. 바로 **프로토타입** 스코프 빈이 필요한 때다.
+    
+    <br>
+    컨트롤러에는 ServiceRequest 오브젝트를 new로 생성하는 대신 프로토타입으로 선언된 serviceRequest 빈을 가져오게 하면 됩니다.
+    
+    ```java
+    @Autowired 
+    ApplicationContext context;
+
+    public void serviceRequestFormSubmit(HttpservletRequest request){
+        ServiceReqeust serviceRequest = this.context.getBean(ServiceRequest.class);
+        serviceReqeust.setCustomerByCustomerNo(reqeust.getParameter("custno"));
+    }
+    ```
+    
+    저 역시도 프로토타입을 위와 같이 사용하지 않았던 걸 보면, 도메인 관점에서 코드를 작성하지 못한 것 같습니다.
+    깊이 **반성**하고, 다시 **공부**하고, **리펙토링** 해야겠습니다. :)
      
+  
   - 스코프 
     
     > 싱글톤과 다르게 독립적인 상태를 저장해두고 사용하는 데 필요.
