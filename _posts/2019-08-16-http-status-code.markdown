@@ -28,6 +28,7 @@ categories: java
    > 요청을 성공적으로 받았으며 성공적으로 처리했음을 의미한다.
    
    - `200` **OK** : 요청 정상 처리.
+   - `201` **Created**: 요청이 성공적이었으며 그 결과로 새로운 리소스가 생성 되었습니다. 이 응답은 일반적으로 POST / PUT 이후에 온다.
    - `204` **No Contents**: 요청 정상 처리, 보낼 내용이 없다. 경우에 따라선 헤더가 유용할 수 있다.
 
 ## 300 ~ 399 : Redirection messages
@@ -46,7 +47,7 @@ categories: java
    - `403` **Forbidden** : 클라이언트는 컨텐츠에 대한 액세스 권한이 없다.
    - `404` **Not Found** : 클라이언트가 요청한 페이지(Resource)를 서버가 찾을 수 없다.
    - `405` **Method Not Allowed** : 클라이언트가 요청한 Method가 허용되지 않은 경우.
-   
+   - `429` **Too Many Requests** : 사용자가 지정된 시간에 너무 많은 응답을 보냈습니다.("rate limiting") 
 ## 500 ~ 599 : Server error responses
 
    > 서버에 오류가 있음을 나타낸다.
