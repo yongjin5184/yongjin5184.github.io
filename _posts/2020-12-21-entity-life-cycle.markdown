@@ -35,7 +35,7 @@ categories: java
 
     대신, 컨셉이 주는 이점이 있다. 
 
-    1.쓰기 지연
+    1. 쓰기 지연
 
     ```java
     Member member1 = new Member(1, "KOBE");
@@ -49,7 +49,7 @@ categories: java
     transaction.commit();
     ```
 
-    2.변경 감지 (Dirty Checking)
+    2. 변경 감지 (Dirty Checking)
 
     ```java
     Member membe = em.find(Member.class, 1);
